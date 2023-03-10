@@ -1,0 +1,36 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: mssql-pv
+  namespace: api
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: my-local-storage
+  local:
+    path: /var/opt/mssql
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - db2
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mssql-claim
+  namespace: api
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: my-local-storage
+  resources:
+    requests:
+      storage: 0.5Gi
+
